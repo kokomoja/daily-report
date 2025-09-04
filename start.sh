@@ -1,3 +1,3 @@
 #!/bin/bash
-source /opt/render/project/src/.venv/bin/activate
-gunicorn app:app --bind 0.0.0.0:10000
+source .venv/bin/activate
+exec gunicorn app:app --bind 0.0.0.0:$PORT
