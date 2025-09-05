@@ -7,6 +7,7 @@
 <body>
     <h1>Daily Report</h1>
     <form id="reportForm">
+        <!-- Machine Dropdown (Hardcode) -->
         <label>Machine:</label>
         <select id="machine">
             <option value="B1">B1</option>
@@ -26,6 +27,7 @@
             <option value="70-8671">70-8671</option>
         </select><br><br>
 
+        <!-- Operator Dropdown (Hardcode) -->
         <label>Operator:</label>
         <select id="operator">
             <option value="นายอุทัย นามคุณ">นายอุทัย นามคุณ</option>
@@ -41,12 +43,15 @@
             <option value="นายปรีชา ชอบงาม">นายปรีชา ชอบงาม</option>
         </select><br><br>
 
+        <!-- Job -->
         <label>Job:</label>
         <input type="text" id="job"><br><br>
 
-        <label>op_date:</label>
-        <input type="date" id="op_date" value="{{ today }}"><br><br>
+        <!-- Operation Date -->
+        <label>Operation Date:</label>
+        <input type="date" id="op_date"><br><br>
 
+        <!-- Start / Stop Time -->
         <label>Start Time:</label>
         <input type="datetime-local" id="start_time"><br><br>
 
@@ -62,9 +67,9 @@
             machine: document.getElementById("machine").value,
             operator: document.getElementById("operator").value,
             job: document.getElementById("job").value,
+            op_date: document.getElementById("op_date").value,
             start_time: document.getElementById("start_time").value,
-            stop_time: document.getElementById("stop_time").value,
-            op_date: document.getElementById("op_date").value
+            stop_time: document.getElementById("stop_time").value
         };
 
         fetch('/save-report', {
