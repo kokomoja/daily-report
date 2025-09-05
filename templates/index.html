@@ -9,20 +9,43 @@
     <form id="reportForm">
         <label>Machine:</label>
         <select id="machine">
-            {% for m in machines %}
-            <option value="{{ m }}">{{ m }}</option>
-            {% endfor %}
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="B3">B3</option>
+            <option value="B4">B4</option>
+            <option value="B5">B5</option>
+            <option value="B6">B6</option>
+            <option value="B7">B7</option>
+            <option value="B8">B8</option>
+            <option value="Crane Yello">Crane Yello</option>
+            <option value="Crane Blue">Crane Blue</option>
+            <option value="Bobcat">Bobcat</option>
+            <option value="70-8919">70-8919</option>
+            <option value="70-8137">70-8137</option>
+            <option value="70-6748">70-6748</option>
+            <option value="70-8671">70-8671</option>
         </select><br><br>
 
         <label>Operator:</label>
         <select id="operator">
-            {% for op in operators %}
-            <option value="{{ op }}">{{ op }}</option>
-            {% endfor %}
+            <option value="นายอุทัย นามคุณ">นายอุทัย นามคุณ</option>
+            <option value="นายบัวไข่ วงศ์อำนาจ">นายบัวไข่ วงศ์อำนาจ</option>
+            <option value="นายวิชิต บัวทอง">นายวิชิต บัวทอง</option>
+            <option value="นายยุทธนา จันทร">นายยุทธนา จันทร</option>
+            <option value="นายสนธยา โมคทิพย์">นายสนธยา โมคทิพย์</option>
+            <option value="นายชาญชัย ธรรมรักษ์">นายชาญชัย ธรรมรักษ์</option>
+            <option value="นายวทัญญู เลิศปรัชญานนท์">นายวทัญญู เลิศปรัชญานนท์</option>
+            <option value="นายสมมิตร ช่วยนคร">นายสมมิตร ช่วยนคร</option>
+            <option value="นายวัชราวุธ เทพหนู">นายวัชราวุธ เทพหนู</option>
+            <option value="นายเจริญ ขำแก้ว">นายเจริญ ขำแก้ว</option>
+            <option value="นายปรีชา ชอบงาม">นายปรีชา ชอบงาม</option>
         </select><br><br>
 
         <label>Job:</label>
         <input type="text" id="job"><br><br>
+
+        <label>op_date:</label>
+        <input type="date" id="op_date" value="{{ today }}"><br><br>
 
         <label>Start Time:</label>
         <input type="datetime-local" id="start_time"><br><br>
@@ -41,7 +64,7 @@
             job: document.getElementById("job").value,
             start_time: document.getElementById("start_time").value,
             stop_time: document.getElementById("stop_time").value,
-            op_date: new Date().toISOString().split('T')[0]
+            op_date: document.getElementById("op_date").value
         };
 
         fetch('/save-report', {
