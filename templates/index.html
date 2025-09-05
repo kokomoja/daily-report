@@ -1,47 +1,58 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Daily Report</title>
+    <meta charset="UTF-8">
+    <title>Daily Report</title>
 </head>
 <body>
-  <h2>Daily Report Form</h2>
-  <form id="reportForm">
-    <label>เครื่องจักร:</label>
-    <select id="machine"></select><br><br>
+    <h1>Daily Report</h1>
+    <form id="reportForm">
+        <label>Machine:</label>
+        <select id="machine">
+            {% for m in machines %}
+            <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+        </select><br><br>
 
-    <label>พนักงาน:</label>
-    <select id="operator"></select><br><br>
+        <label>Operator:</label>
+        <select id="operator">
+            {% for op in operators %}
+            <option value="{{ op }}">{{ op }}</option>
+            {% endfor %}
+        </select><br><br>
 
-    <label>งาน:</label>
-    <input type="text" id="job"><br><br>
+        <label>Job:</label>
+        <input type="text" id="job"><br><br>
 
-    <button type="submit">บันทึก</button>
-  </form>
+        <label>Start Time:</label>
+        <input type="datetime-local" id="start_time"><br><br>
 
-  <script>
-    async function loadDropdowns() {
-      const res = await fetch("/get-dropdown-data");
-      const data = await res.json();
+        <label>Stop Time:</label>
+        <input type="datetime-local" id="stop_time"><br><br>
 
-      let machineSelect = document.getElementById("machine");
-      data.machines.forEach(m => {
-        let opt = document.createElement("option");
-        opt.value = m;
-        opt.textContent = m;
-        machineSelect.appendChild(opt);
-      });
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
 
-      let operatorSelect = document.getElementById("operator");
-      data.operators.forEach(o => {
-        let opt = document.createElement("option");
-        opt.value = o;
-        opt.textContent = o;
-        operatorSelect.appendChild(opt);
-      });
+    <script>
+    function submitForm() {
+        const data = {
+            machine: document.getElementById("machine").value,
+            operator: document.getElementById("operator").value,
+            job: document.getElementById("job").value,
+            start_time: document.getElementById("start_time").value,
+            stop_time: document.getElementById("stop_time").value,
+            op_date: new Date().toISOString().split('T')[0]
+        };
+
+        fetch('/save-report', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => alert(res.message))
+        .catch(err => console.error(err));
     }
-
-    loadDropdowns();
-  </script>
+    </script>
 </body>
 </html>
