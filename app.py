@@ -1,24 +1,27 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from datetime import datetime
-import pymssql
+import pyodbc
 import os
+from dotenv import load_dotenv
+
+# โหลด .env
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Connection string เดิม: ใช้ Environment Variable บน Render
-# แยกเป็น host, user, password, database
-conn_str = os.environ.get("SQL_CONN")  # ตัวอย่าง: 'server=xxx;user=xxx;password=xxx;database=xxx'
+# สร้าง connection string จาก environment variables
+driver = '{ODBC Driver 17 for SQL Server}'
+server = os.environ.get("SQL_SERVER")
+database = os.environ.get("SQL_DB")
+username = os.environ.get("SQL_USER")
+password = os.environ.get("SQL_PASSWORD")
 
-def parse_conn_str(conn_str):
-    """ แยก connection string เป็น host, user, password, database """
-    parts = dict(item.split('=') for item in conn_str.split(';') if item)
-    return parts['server'], parts['user'], parts['password'], parts['database']
+conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
 
 def get_conn():
-    host, user, password, database = parse_conn_str(conn_str)
-    return pymssql.connect(server=host, user=user, password=password, database=database)
+    return pyodbc.connect(conn_str)
 
 @app.route("/")
 def index():
@@ -29,9 +32,9 @@ def get_dropdown_data():
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT machine FROM machineNumber")
-    machines = [row[0] for row in cursor.fetchall()]
+    machines = [row.machine for row in cursor.fetchall()]
     cursor.execute("SELECT op_name FROM operatorName")
-    operators = [row[0] for row in cursor.fetchall()]
+    operators = [row.op_name for row in cursor.fetchall()]
     conn.close()
     return jsonify({'machines': machines, 'operators': operators})
 
@@ -51,10 +54,10 @@ def save_report():
         cursor = conn.cursor()
         sql = """
         INSERT INTO dailyReport (op_date, machine, operator, job, start_time, stop_time, op_hour)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """
-        cursor.execute(sql, (op_date, data['machine'], data['operator'], data['job'],
-                             start_time, stop_time, op_hour_str))
+        cursor.execute(sql, data['machine'], data['operator'], data['job'],
+                       start_time, stop_time, op_hour_str)
         conn.commit()
         conn.close()
         return jsonify({"message": "บันทึกสำเร็จ!"})
